@@ -31,6 +31,8 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
+    HEARTBEATREQ,
+    HEARTBEATREP,
     DUMMYLASTMSGTYPE
 };
 
@@ -69,13 +71,27 @@ public:
 	int finishUpThisNode();
 	void nodeLoop();
 	void checkMessages();
-	bool recvCallBack(void *env, char *data, int size);
+	void recvCallBack(void *env, char *data, int size);
 	void nodeLoopOps();
 	int isNullAddress(Address *addr);
 	Address getJoinAddress();
 	void initMemberListTable(Member *memberNode);
 	void printAddress(Address *addr);
 	virtual ~MP1Node();
+
+	void updateMember(int id, short port, long heartbeat);
+
+	void recvJoinReq(void *env, char *data, int size);
+	void recvJoinRep(void *env, char *data, int size);
+
+	bool recvHeartbeatReq(void *env, char *data, int size);
+	bool recvHeartbeatRep(void *env, char *data, int size);
+
+	void recvMemberList(const char * label, void *env, char *data, int size);
+
+	void sendMemberList(const char * label, enum MsgTypes msgType, Address *to);
+
+	void logMemberListEntry(MemberListEntry& member);
 };
 
 #endif /* _MP1NODE_H_ */
